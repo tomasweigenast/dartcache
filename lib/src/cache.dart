@@ -1,28 +1,21 @@
 import 'dart:async';
 
-import 'package:dartcache/src/async_cache_impl.dart';
-import 'package:dartcache/src/eviction.dart';
-import 'package:dartcache/src/impl/memory_cache.dart';
+import 'package:dartcache/src/cache_entry.dart';
 
 abstract interface class Cache {
-  // factory Cache.async() = AsyncCache;
-  // factory Cache.sync() = SyncCache;
-
   FutureOr<T?> get<T>(String key);
-  FutureOr<void> put<T>(String key, T value, {Expires? expires});
+  FutureOr<void> put<T>(String key, T value, {EntrySettings settings = const EntrySettings()});
   FutureOr<void> evict(String key);
   FutureOr<void> clear();
   FutureOr<bool> update<T>(String key, T Function(T value) callback, {bool refreshTTL = false});
 }
 
 abstract interface class SyncCache implements Cache {
-  factory SyncCache() => MemoryCache();
-
   @override
   T? get<T>(String key);
 
   @override
-  void put<T>(String key, T value, {Expires? expires});
+  void put<T>(String key, T value, {EntrySettings settings = const EntrySettings()});
 
   @override
   void evict(String key);
@@ -35,13 +28,11 @@ abstract interface class SyncCache implements Cache {
 }
 
 abstract interface class AsyncCache implements Cache {
-  factory AsyncCache() => AsyncCacheImpl();
-
   @override
   Future<T?> get<T>(String key);
 
   @override
-  Future<void> put<T>(String key, T value, {Expires? expires});
+  Future<void> put<T>(String key, T value, {EntrySettings settings = const EntrySettings()});
 
   @override
   Future<void> evict(String key);

@@ -4,7 +4,8 @@ sealed class Expires {
   const Expires();
 
   const factory Expires.noExpires() = NoExpiration;
-  const factory Expires.expiresAt(Duration ttl) = ExpiresAt;
+  const factory Expires.expiresAt(DateTime at) = ExpiresAt;
+  factory Expires.expiresAfter(Duration ttl, {DateTime? from}) => ExpiresAt((from ?? DateTime.now()).add(ttl));
 }
 
 final class NoExpiration extends Expires {
@@ -12,6 +13,6 @@ final class NoExpiration extends Expires {
 }
 
 final class ExpiresAt extends Expires {
-  final Duration ttl;
-  const ExpiresAt(this.ttl);
+  final DateTime at;
+  const ExpiresAt(DateTime date) : at = date;
 }
